@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 
 # LangChain imports
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.chains import RetrievalQA
 from langchain_groq import ChatGroq
 from langchain.schema import Document
@@ -151,4 +151,5 @@ def generate_answer(query):
         sources = "\n".join([doc.metadata.get("source", "Unknown") for doc in result["source_documents"]])
 
     return answer, sources
+
 
