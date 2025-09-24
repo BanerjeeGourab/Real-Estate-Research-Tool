@@ -5,5 +5,8 @@ tiktoken
 langchain-chroma
 langchain-groq
 langchain-community
-protobuf
 langchain-huggingface
+protobuf
+torch
+transformers>=4.30
+sentence-transformers>=2.2
