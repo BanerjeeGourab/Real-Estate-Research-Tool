@@ -88,7 +88,7 @@ def process_urls(urls):
 
     yield "Resetting vector store...✅"
     global vector_store
-    ef = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL, model_kwargs={"trust_remote_code": True})
+    ef = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL, model_kwargs={"device": "cpu"})
 
     # Delete old collection if exists
     try:
@@ -151,5 +151,6 @@ def generate_answer(query):
         sources = "\n".join([doc.metadata.get("source", "Unknown") for doc in result["source_documents"]])
 
     return answer, sources
+
 
 
