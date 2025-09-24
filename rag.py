@@ -4,6 +4,7 @@ import os
 import certifi
 import requests
 from bs4 import BeautifulSoup
+import streamlit as st
 from dotenv import load_dotenv
 
 # LangChain imports
@@ -14,15 +15,17 @@ from langchain.chains import RetrievalQA
 from langchain_groq import ChatGroq
 from langchain.schema import Document
 
-# ✅ Load .env file
+# Load .env for local development
 load_dotenv()
 
-# ✅ Get Groq API Key from environment variable
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+# Load API key: Streamlit secrets > .env
+GROQ_API_KEY = st.secrets.get("GROQ_API_KEY") or os.getenv("GROQ_API_KEY")
 if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY not found. Please set it in your .env file.")
+    raise ValueError(
+        "GROQ_API_KEY not found. Please set it in your .env file or Streamlit secrets."
+    )
 
-# ✅ Ensure SSL works for requests
+# Ensure SSL works for requests
 os.environ["SSL_CERT_FILE"] = certifi.where()
 
 # Constants
@@ -45,7 +48,7 @@ def initialize_components():
             model="llama-3.3-70b-versatile",
             temperature=0.9,
             max_tokens=500,
-            api_key=GROQ_API_KEY  # ✅ loaded from .env
+            api_key=GROQ_API_KEY
         )
 
     if vector_store is None:
@@ -148,21 +151,4 @@ def generate_answer(query):
         sources = "\n".join([doc.metadata.get("source", "Unknown") for doc in result["source_documents"]])
 
     return answer, sources
-
-
-# Optional test run
-if __name__ == "__main__":
-    test_urls = [
-        "https://www.cnbc.com/2024/12/21/how-the-federal-reserves-rate-policy-affects-mortgages.html",
-        "https://www.cnbc.com/2024/12/20/why-mortgage-rates-jumped-despite-fed-interest-rate-cut.html"
-    ]
-
-    for status in process_urls(test_urls):
-        print(status)
-
-    answer, sources = generate_answer("Tell me what was the 30-year fixed mortgage rate along with the date?")
-    print(f"\nAnswer: {answer}")
-    print(f"Sources: {sources}")
-
-
 
